@@ -61,6 +61,31 @@ public class ControladorJuego {
     }
 
     /**
+     * Permite mover manualmente un dado de una estación a otra.
+     * @param estacionOrigen de la persona que entrega el dado.
+     * @param estacionDestino de la persona que recibe el dado.
+     * @return true si se pudo realizar el movimiento, false si la estación origen no tenía dados.
+     */
+    public boolean transferirDado(int estacionOrigen, int estacionDestino) {
+        if (estacionOrigen < 0 || estacionOrigen >= estaciones || estacionDestino < 0 || estacionDestino >= estaciones) {
+            return false;
+        }
+
+        Persona origen = personas.get(estacionOrigen);
+        Persona destino = personas.get(estacionDestino);
+
+        // Solamente se puede mover si la estación seleccionada posee al menos 1 dado.
+        if (origen.getCantidadDados() > 0) {
+            Dado dadoAMover = origen.removerDado();
+            if (dadoAMover != null) {
+                destino.agregarDado(dadoAMover);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Ejecuta el movimiento de clientes entre estaciones.
      */
     public void mover() {
