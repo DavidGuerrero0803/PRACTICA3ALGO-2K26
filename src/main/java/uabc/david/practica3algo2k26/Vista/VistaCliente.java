@@ -6,6 +6,10 @@ import uabc.david.practica3algo2k26.Modelo.Cliente;
 
 import java.net.URL;
 
+/**
+ * Renderiza visualmente a un cliente individual.
+ * Selecciona el cliente según su tipo (inicial es gris, nuevo es azul).
+ */
 public class VistaCliente {
     private Cliente cliente;
     private ImageView imagenCliente;
