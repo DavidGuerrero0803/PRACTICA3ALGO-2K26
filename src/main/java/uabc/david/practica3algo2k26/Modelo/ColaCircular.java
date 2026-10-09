@@ -13,25 +13,25 @@ public class ColaCircular<T> {
      * Constructor por defecto con capacidad inicial de 10 elementos.
      */
     public ColaCircular() {
-        colaCircular = (T[])(new Object[10]);
+        this.colaCircular = (T[]) (new Object[10]);
         this.inicio = -1;
         this.fin = -1;
     }
 
     /**
      * Constructor parametrizado.
-     * @param capacidad Tamaño máximo del arreglo para la cola circular.
+     * @param capacidad del arreglo para la cola circular.
      */
     public ColaCircular(int capacidad) {
-        colaCircular = (T[])(new Object[capacidad]);
+        this.colaCircular = (T[]) (new Object[capacidad]);
         this.inicio = -1;
         this.fin = -1;
     }
 
     /**
-     * Inserta un dato al final de la cola circular reutilizando índices liberados.
-     * @param dato Elemento a insertar.
-     * @return true si se insertó con éxito, false si la cola está llena.
+     * Inserta un dato al final de la cola circular.
+     * @param dato a insertar.
+     * @return true si se insertó con éxito (false si la cola está llena).
      */
     public boolean insertarDato(T dato) {
         if (colaLlena()) {
@@ -53,7 +53,7 @@ public class ColaCircular<T> {
 
     /**
      * Elimina y devuelve el primer elemento de la cola circular.
-     * @return El elemento eliminado, o null si la cola está vacía.
+     * @return El elemento eliminado (null si la cola está vacía).
      */
     public T eliminarDato() {
         if (colaVacia()) {
@@ -103,6 +103,9 @@ public class ColaCircular<T> {
      * Genera una cadena de texto con el contenido actual de la cola.
      */
     public String mostrarDatos() {
+        if (colaVacia()) {
+            return "";
+        }
         StringBuilder datos = new StringBuilder();
         int n = getCantidadElementos();
         for (int i = 0; i < n; i++) {
