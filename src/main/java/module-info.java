@@ -5,4 +5,5 @@ module uabc.david.practica3algo2k26 {
 
     opens uabc.david.practica3algo2k26 to javafx.fxml;
     exports uabc.david.practica3algo2k26;
+    exports uabc.david.practica3algo2k26.Vista;
 }

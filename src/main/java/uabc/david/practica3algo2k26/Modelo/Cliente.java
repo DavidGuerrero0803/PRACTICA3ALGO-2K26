@@ -40,4 +40,12 @@ public class Cliente {
         return turnoDeEntrada;
     }
 
+    /**
+     * Devuelve un solo carácter para que la vista lo lea desde ColaCircular.
+     * @return "I" si es un cliente inicial (gris), "N" si es nuevo (azul).
+     */
+    @Override
+    public String toString() {
+        return esInicial ? "I" : "N";
+    }
 }

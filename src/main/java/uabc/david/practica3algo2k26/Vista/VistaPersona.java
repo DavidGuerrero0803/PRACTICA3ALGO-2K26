@@ -1,110 +1,84 @@
 package uabc.david.practica3algo2k26.Vista;
 
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
-import uabc.david.practica3algo2k26.Modelo.Cliente;
-import uabc.david.practica3algo2k26.Modelo.ColaCircular;
 import uabc.david.practica3algo2k26.Modelo.Dado;
 import uabc.david.practica3algo2k26.Modelo.Persona;
 
-import java.net.URL;
-
 /**
- * Representa visualmente la estación de 1 persona, por lo que
- * contendrá la silueta de la persona, su dado o dados y los clientes.
+ * Representa visualmente a 1 persona de la línea la imagen
+ * de la persona, sus dados y la cola de clientes.
  */
 public class VistaPersona {
     private Persona persona;
-    private VBox estacionPane;
     private ImageView imagenPersona;
+    private FlowPane panelDados;
+    private FlowPane panelClientes;
 
+    /**
+     * Crea la vista de una persona con su estado actual.
+     * @param persona la persona a representar.
+     */
     public VistaPersona(Persona persona) {
         this.persona = persona;
-        this.estacionPane = new VBox(5);
-        this.estacionPane.setAlignment(Pos.CENTER);
-        this.imagenPersona = new ImageView();
-        construirEstacion();
+        construirImagen();
+        construirDados();
+        construirClientes();
     }
 
     /**
-     * Construye la estructura visual de la estación de trabajo.
+     * Carga la imagen de la persona según su posición en la línea.
      */
-    private void construirEstacion() {
-        String rutaPersona = String.format("/Personas/persona%d.png", persona.getIdEstacion() + 1);
-        imagenPersona = crearImagen(rutaPersona, 100);
+    private void construirImagen() {
+        String ruta = String.format("/Personas/persona%d.png", persona.getIdEstacion() + 1);
+        imagenPersona = CargadorImagenes.crearImageView(ruta, 100);
+    }
 
-        HBox contenedorDados = new HBox(3);
-        contenedorDados.setAlignment(Pos.CENTER);
+    /**
+     * Construye el panel con los dados de la persona.
+     */
+    private void construirDados() {
+        panelDados = new FlowPane();
+        panelDados.setPrefWrapLength(100);
         for (Dado dado : persona.getDados()) {
-            VistaDado vistaDado = new VistaDado(dado);
-            ImageView imgDado = vistaDado.mostrarDado();
+            ImageView imgDado = new VistaDado(dado).mostrarDado();
             if (imgDado != null) {
-                contenedorDados.getChildren().add(imgDado);
+                panelDados.getChildren().add(imgDado);
             }
         }
+    }
 
-        Label lblEstacion = new Label("P" + (persona.getIdEstacion() + 1));
-        lblEstacion.setStyle("-fx-font-weight: bold; -fx-text-fill: #333333;");
+    /**
+     * Construye el panel con los clientes de la cola de la persona.
+     */
+    private void construirClientes() {
+        panelClientes = new FlowPane();
+        panelClientes.setHgap(2);
+        panelClientes.setVgap(2);
+        panelClientes.setPrefWrapLength(100);
 
-        FlowPane contenedorClientes = new FlowPane();
-        contenedorClientes.setHgap(2);
-        contenedorClientes.setVgap(2);
-        contenedorClientes.setMaxWidth(120);
-        contenedorClientes.setAlignment(Pos.CENTER);
-
-        // Renderiza cada cliente presente en la cola circular.
-        ColaCircular<Cliente> cola = persona.getCola();
-        int totalClientes = cola.getCantidadElementos();
-
-        // Oculta la cola visual para la estación 0 (es la reserva infinita).
         if (!persona.esPrimera()) {
-            for (int i = 0; i < totalClientes; i++) {
-                // Recupera el arreglo interno para dibujar los objetos en orden de llegada.
-                Cliente cliente = cola.getColaCircular()[(cola.getCantidadElementos() == 0) ? 0 : i];
-                if (cliente != null) {
-                    VistaCliente vistaCliente = new VistaCliente(cliente);
-                    ImageView imgCliente = vistaCliente.mostrarCliente();
-                    if (imgCliente != null) {
-                        contenedorClientes.getChildren().add(imgCliente);
-                    }
+            String contenido = persona.getCola().mostrarDatos();
+            for (int i = 0; i < contenido.length(); i++) {
+                ImageView imgCliente = new VistaCliente(contenido.charAt(i) == 'I').mostrarCliente();
+                if (imgCliente != null) {
+                    panelClientes.getChildren().add(imgCliente);
                 }
             }
         }
-
-        // Une todos los elementos para formar así la estación.
-        if (imagenPersona != null) {
-            estacionPane.getChildren().addAll(lblEstacion, contenedorDados, imagenPersona, contenedorClientes);
-        }
     }
 
-    private ImageView crearImagen(String url, int size) {
-        try {
-            URL resource = getClass().getResource(url);
-            if (resource != null) {
-                Image image = new Image(resource.toExternalForm());
-                ImageView imageView = new ImageView(image);
-                imageView.setFitWidth(size);
-                imageView.setFitHeight(size);
-                imageView.setPreserveRatio(true);
-                return imageView;
-            } else {
-                System.err.println("Error: No se encontró la imagen en " + url);
-                return null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    public ImageView getImagenPersona() {
+        return imagenPersona;
     }
 
-    public VBox getPane() {
-        return estacionPane;
+    public FlowPane getPanelDados() {
+        return panelDados;
+    }
+
+    public FlowPane getPanelClientes() {
+        return panelClientes;
     }
 
     public Persona getPersona() {

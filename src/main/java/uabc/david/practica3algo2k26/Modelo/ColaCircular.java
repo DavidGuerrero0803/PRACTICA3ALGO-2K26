@@ -99,10 +99,6 @@ public class ColaCircular<T> {
         return (fin - inicio + colaCircular.length) % colaCircular.length + 1;
     }
 
-    public T[] getColaCircular() {
-        return colaCircular;
-    }
-
     /**
      * Genera una cadena de texto con el contenido actual de la cola.
      */
