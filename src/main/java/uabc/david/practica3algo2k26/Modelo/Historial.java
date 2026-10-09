@@ -35,4 +35,57 @@ public class Historial {
         tiradas.add(lanzamientos);
         movimientos.add(clientesDesplazados);
     }
+
+    /**
+     * Registra el número total de clientes acumulados en la última estación.
+     * @param total de unidades procesadas del sistema.
+     */
+    public void registrarThroughput(int total) {
+        throughput.add(total);
+    }
+
+    /**
+     * Registra los clientes en proceso dentro de las estaciones intermedias.
+     * @param total de clientes en espera en la línea.
+     */
+    public void registrarNumberInSystem(int total) {
+        numberInSystem.add(total);
+    }
+
+    /**
+     * Registra "el tiempo" que tardó un cliente en cruzar la línea completa.
+     * @param tiempo cantidad de rondas desde su ingreso hasta su salida.
+     */
+    public void registrarTimeInSystem(int tiempo) {
+        timeInSystem.add(tiempo);
+    }
+
+    public ArrayList<Integer> getThroughput() {
+        return throughput;
+    }
+
+    public ArrayList<Integer> getNumberInSystem() {
+        return numberInSystem;
+    }
+
+    public ArrayList<Integer> getTimeInSystem() {
+        return timeInSystem;
+    }
+
+    public int getTirada(int ronda, int persona) {
+        return tiradas.get(ronda)[persona];
+    }
+
+    public int getMovimiento(int ronda, int persona) {
+        return movimientos.get(ronda)[persona];
+    }
+
+    public int getRonda() {
+        return tiradas.size();
+    }
+
+    public int getEstaciones() {
+        return estaciones;
+    }
+
 }
