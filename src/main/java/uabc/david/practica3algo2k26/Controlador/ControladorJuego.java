@@ -128,7 +128,7 @@ public class ControladorJuego {
                             boolean insertado = siguiente.getCola().insertarDato(clienteExtraido);
                             if (insertado) {
                                 movidos++;
-                                // Registro de la métrica Time in System al llegar a la última estación.
+                                // Registra la métrica Time in System al llegar a la última estación.
                                 if (siguiente.esUltima()) {
                                     int tiempoEnSistema = turnoActual - clienteExtraido.getTurnoDeEntrada();
                                     historial.registrarTimeInSystem(tiempoEnSistema);
@@ -153,5 +153,34 @@ public class ControladorJuego {
         clientePorProcesar[0] = capacidadReserva;
         clientesMovidos[0] = capacidadReserva;
 
+        // Por último, se guardan las métricas en cada turno.
+        guardarMetricas(clientePorProcesar, clientesMovidos);
     }
+
+    /**
+     * Guarda Activity, Number in System y Throughput en el Historial.
+     */
+    private void guardarMetricas(int[] clientePorProcesar, int[] clientesMovidos) {
+        int numberInSystem = 0;
+        for (int i = 1; i < estaciones - 1; i++) {
+            numberInSystem += personas.get(i).getCola().getCantidadElementos();
+        }
+
+        historial.registrarNumberInSystem(numberInSystem);
+        historial.registrarThroughput(personas.get(estaciones - 1).getCola().getCantidadElementos());
+        historial.registrarActividad(clientePorProcesar, clientesMovidos);
+    }
+
+    public int getTurnoActual() {
+        return turnoActual;
+    }
+
+    public ArrayList<Persona> getPersonas() {
+        return personas;
+    }
+
+    public Historial getHistorial() {
+        return historial;
+    }
+
 }
