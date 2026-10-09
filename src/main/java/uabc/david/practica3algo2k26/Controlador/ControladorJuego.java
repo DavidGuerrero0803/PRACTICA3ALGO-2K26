@@ -16,37 +16,65 @@ public class ControladorJuego {
     private ArrayList<Persona> personas;
     private Historial historial;
     private int estaciones;
+    private int clientesIniciales;
+    private int turnosMax;
     private int turnoActual;
+    private boolean iniciado;
+    private boolean dadosLanzados;
 
     /**
      * Constructor del controlador.
-     * Configura las estaciones e inicializa la cantidad inicial de clientes.
      * @param estaciones en la línea.
-     * @param clientesIniciales Clientes iniciales por estación intermedia (3 por defecto).
+     * @param clientesIniciales por estación intermedia.
+     * @param turnosMax los turnos que dura el juego.
      */
-    public ControladorJuego(int estaciones, int clientesIniciales) {
+    public ControladorJuego(int estaciones, int clientesIniciales, int turnosMax) {
         this.estaciones = estaciones;
+        this.clientesIniciales = clientesIniciales;
+        this.turnosMax = turnosMax;
         this.personas = new ArrayList<>();
         this.historial = new Historial(estaciones);
         this.turnoActual = 0;
+        this.iniciado = false;
+        this.dadosLanzados = false;
 
-        inicializarEstaciones(clientesIniciales);
+        crearPersonas();
     }
 
     /**
-     * Instancia las personas y asigna clientes iniciales a las estaciones intermedias.
+     * Instancia las personas de la línea.
      */
-    private void inicializarEstaciones(int clientesIniciales) {
+    private void crearPersonas() {
         for (int i = 0; i < estaciones; i++) {
             personas.add(new Persona(i));
         }
+    }
 
-        // Asigna los clientes iniciales (grises) a las estaciones intermedias.
+    /**
+     * Empieza el juego, asignando los clientes iniciales (grises).
+     */
+    public void iniciar() {
+        if (iniciado) {
+            return;
+        }
         for (int i = 1; i < estaciones - 1; i++) {
             for (int j = 0; j < clientesIniciales; j++) {
                 personas.get(i).getCola().insertarDato(new Cliente(0, true));
             }
         }
+        iniciado = true;
+    }
+
+    /**
+     * Reinicia el juego completo.
+     */
+    public void reiniciar() {
+        personas.clear();
+        historial = new Historial(estaciones);
+        turnoActual = 0;
+        iniciado = false;
+        dadosLanzados = false;
+        crearPersonas();
     }
 
     /**
@@ -58,6 +86,7 @@ public class ControladorJuego {
                 dado.lanzar();
             }
         }
+        dadosLanzados = true;
     }
 
     /**
@@ -155,6 +184,7 @@ public class ControladorJuego {
 
         // Por último, se guardan las métricas en cada turno.
         guardarMetricas(clientePorProcesar, clientesMovidos);
+        dadosLanzados = false;
     }
 
     /**
@@ -173,6 +203,27 @@ public class ControladorJuego {
 
     public int getTurnoActual() {
         return turnoActual;
+    }
+
+    /**
+     * @return true si ya se presionó Start.
+     */
+    public boolean isIniciado() {
+        return iniciado;
+    }
+
+    /**
+     * @return true si ya se lanzaron los dados del turno actual.
+     */
+    public boolean isDadosLanzados() {
+        return dadosLanzados;
+    }
+
+    /**
+     * @return true si ya se jugaron todos los turnos.
+     */
+    public boolean haTerminado() {
+        return turnoActual >= turnosMax;
     }
 
     public ArrayList<Persona> getPersonas() {
