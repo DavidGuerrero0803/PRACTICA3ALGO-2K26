@@ -30,7 +30,7 @@ public class VistaDado {
      * Construye la ruta basada en el valor del dado.
      */
     public String construirRuta() {
-        return String.format("Dados/Dado%d.png", dado.getValor());
+        return String.format("/Dados/Dado%d.png", dado.getValor());
     }
 
     private ImageView crearImagen(String url, int size) {

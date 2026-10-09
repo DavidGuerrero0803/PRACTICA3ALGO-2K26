@@ -32,9 +32,9 @@ public class VistaCliente {
      */
     public String construirRuta() {
         if (cliente.esInicial()) {
-            return "Clientes/ClienteGris.png";
+            return "/Clientes/ClienteGris.png";
         } else {
-            return "Clientes/ClienteAzul.png";
+            return "/Clientes/ClienteAzul.png";
         }
     }
 

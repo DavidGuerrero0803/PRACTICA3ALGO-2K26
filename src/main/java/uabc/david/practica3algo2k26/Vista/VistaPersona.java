@@ -36,7 +36,7 @@ public class VistaPersona {
      * Construye la estructura visual de la estación de trabajo.
      */
     private void construirEstacion() {
-        String rutaPersona = String.format("Personas/persona%d.png", persona.getIdEstacion() + 1);
+        String rutaPersona = String.format("/Personas/persona%d.png", persona.getIdEstacion() + 1);
         imagenPersona = crearImagen(rutaPersona, 100);
 
         HBox contenedorDados = new HBox(3);
