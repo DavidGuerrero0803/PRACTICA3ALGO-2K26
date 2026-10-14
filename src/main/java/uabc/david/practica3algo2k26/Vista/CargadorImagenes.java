@@ -11,13 +11,8 @@ import java.util.HashSet;
  * Se encarga de cargar las imágenes del juego desde los recursos.
  */
 public class CargadorImagenes {
-    private static HashMap<String, Image> imagenes;
-    private static HashSet<String> faltantes;
-
-    public CargadorImagenes() {
-        imagenes = new HashMap<>();
-        faltantes = new HashSet<>();
-    }
+    private static HashMap<String, Image> imagenes = new HashMap<>();
+    private static HashSet<String> faltantes = new HashSet<>();
 
     /**
      * Crea un ImageView con la imagen indicada.
