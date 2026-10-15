@@ -76,7 +76,7 @@ public class VistaTablero {
                 colocarElementoInferior(vista.getPanelClientes(), columnaCola, filaCola);
             }
         }
-
+        colocarElementoInferior(new VistaCola(controlador.getTerminados()).getPanel(), 0, 5);
     }
 
     private void colocarElemento(Node nodo, int columna, int fila) {

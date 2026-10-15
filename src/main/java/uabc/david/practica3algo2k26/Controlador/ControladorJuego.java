@@ -1,9 +1,10 @@
 package uabc.david.practica3algo2k26.Controlador;
 
 import uabc.david.practica3algo2k26.Modelo.Cliente;
-import uabc.david.practica3algo2k26.Modelo.Dado;
+import uabc.david.practica3algo2k26.Modelo.ColaCircular;
 import uabc.david.practica3algo2k26.Modelo.Historial;
 import uabc.david.practica3algo2k26.Modelo.Persona;
+import uabc.david.practica3algo2k26.Modelo.Dado;
 
 import java.util.ArrayList;
 
@@ -14,8 +15,10 @@ import java.util.ArrayList;
  */
 public class ControladorJuego {
     private ArrayList<Persona> personas;
+    private ColaCircular<Cliente> terminados;
     private Historial historial;
     private int estaciones;
+    private int capacidadCola;
     private int clientesIniciales;
     private int turnosMax;
     private int turnoActual;
@@ -32,6 +35,7 @@ public class ControladorJuego {
         this.estaciones = estaciones;
         this.clientesIniciales = clientesIniciales;
         this.turnosMax = turnosMax;
+        this.capacidadCola = clientesIniciales * estaciones + turnosMax * estaciones * 6;
         this.personas = new ArrayList<>();
         this.historial = new Historial(estaciones);
         this.turnoActual = 0;
@@ -46,8 +50,10 @@ public class ControladorJuego {
      */
     private void crearPersonas() {
         for (int i = 0; i < estaciones; i++) {
-            personas.add(new Persona(i));
+            personas.add(new Persona(i, capacidadCola));
         }
+        // "Pila" donde se acumulan los clientes que ya salieron de la línea.
+        terminados = new ColaCircular<>(capacidadCola);
     }
 
     /**
@@ -57,7 +63,7 @@ public class ControladorJuego {
         if (iniciado) {
             return;
         }
-        for (int i = 1; i < estaciones - 1; i++) {
+        for (int i = 1; i < estaciones; i++) {
             for (int j = 0; j < clientesIniciales; j++) {
                 personas.get(i).getCola().insertarDato(new Cliente(0, true));
             }
@@ -90,12 +96,23 @@ public class ControladorJuego {
     }
 
     /**
+     * Indica si en este momento se pueden mover dados.
+     * @return true si se puede mover un dado de una persona a otra.
+     */
+    public boolean puedeMoverDados() {
+        return iniciado && !dadosLanzados && !haTerminado();
+    }
+
+    /**
      * Permite mover manualmente un dado de una estación a otra.
      * @param estacionOrigen de la persona que entrega el dado.
      * @param estacionDestino de la persona que recibe el dado.
      * @return true si se pudo realizar el movimiento, false si la estación origen no tenía dados.
      */
     public boolean transferirDado(int estacionOrigen, int estacionDestino) {
+        if (!puedeMoverDados()) {
+            return false;
+        }
         if (estacionOrigen < 0 || estacionOrigen >= estaciones || estacionDestino < 0 || estacionDestino >= estaciones) {
             return false;
         }
@@ -127,10 +144,10 @@ public class ControladorJuego {
             clientePorProcesar[i] = personas.get(i).getCola().getCantidadElementos();
         }
 
-        // Recorrido en sentido inverso (penúltima estación hacia la primera).
-        for (int i = estaciones - 2; i >= 0; i--) {
+        // Recorrido en sentido inverso (de la última persona a la primera): así cada una solo atiende
+        // lo que ya estaba en su cola al inicio del turno.
+        for (int i = estaciones - 1; i >= 0; i--) {
             Persona actual = personas.get(i);
-            Persona siguiente = personas.get(i + 1);
 
             // Calcula la suma de todos los dados lanzados por la estación.
             int capacidadProcesamiento = 0;
@@ -142,28 +159,33 @@ public class ControladorJuego {
 
             // La estación 0 representa la reserva infinita (puede mover exactamente la suma de sus dados).
             if (actual.esPrimera()) {
+                Persona siguiente = personas.get(i + 1);
                 for (int k = 0; k < capacidadProcesamiento; k++) {
-                    siguiente.getCola().insertarDato(new Cliente(turnoActual, false));
+                    if (!siguiente.getCola().insertarDato(new Cliente(turnoActual, false))) {
+                        break;
+                    }
                     movidos++;
                 }
             } else {
-                // Las estaciones intermedias mueven hasta el máximo disponible en su cola antes del turno.
+                // Las demás mueven hasta el máximo disponible en su cola antes del turno.
+                // La última entrega a la pila de terminados en lugar de a otra persona.
+                boolean esLaUltima = (i == estaciones - 1);
+                ColaCircular<Cliente> destino = esLaUltima ? terminados : personas.get(i + 1).getCola();
                 int limiteDisponible = clientePorProcesar[i];
                 for (int k = 0; k < capacidadProcesamiento; k++) {
                     if (movidos < limiteDisponible && !actual.getCola().colaVacia()) {
                         Cliente clienteExtraido = actual.getCola().eliminarDato();
 
                         if (clienteExtraido != null) {
-                            boolean insertado = siguiente.getCola().insertarDato(clienteExtraido);
-                            if (insertado) {
+                            if (destino.insertarDato(clienteExtraido)) {
                                 movidos++;
-                                // Registra la métrica Time in System al llegar a la última estación.
-                                if (siguiente.esUltima()) {
-                                    int tiempoEnSistema = turnoActual - clienteExtraido.getTurnoDeEntrada();
-                                    historial.registrarTimeInSystem(tiempoEnSistema);
+                                // De una vez, se registra Time in System al salir clientes de la línea.
+                                if (esLaUltima && !clienteExtraido.esInicial()) {
+                                    int tiempoEnSistema = turnoActual - clienteExtraido.getTurnoDeEntrada() + 1;
+                                    historial.registrarTimeInSystem(turnoActual, tiempoEnSistema);
                                 }
                             } else {
-                                // Regresa el cliente a la cola si la siguiente estación está llena (desbordamiento).
+                                // Regresa el cliente a su cola si el destino está lleno (no debería pasar).
                                 actual.getCola().insertarDato(clienteExtraido);
                                 break;
                             }
@@ -192,12 +214,12 @@ public class ControladorJuego {
      */
     private void guardarMetricas(int[] clientePorProcesar, int[] clientesMovidos) {
         int numberInSystem = 0;
-        for (int i = 1; i < estaciones - 1; i++) {
+        for (int i = 1; i < estaciones; i++) {
             numberInSystem += personas.get(i).getCola().getCantidadElementos();
         }
 
         historial.registrarNumberInSystem(numberInSystem);
-        historial.registrarThroughput(personas.get(estaciones - 1).getCola().getCantidadElementos());
+        historial.registrarThroughput(terminados.getCantidadElementos());
         historial.registrarActividad(clientePorProcesar, clientesMovidos);
     }
 
@@ -228,6 +250,13 @@ public class ControladorJuego {
 
     public ArrayList<Persona> getPersonas() {
         return personas;
+    }
+
+    /**
+     * @return la pila de clientes que ya salieron de la línea.
+     */
+    public ColaCircular<Cliente> getTerminados() {
+        return terminados;
     }
 
     public Historial getHistorial() {
