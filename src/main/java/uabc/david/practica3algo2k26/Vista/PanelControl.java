@@ -37,6 +37,7 @@ public class PanelControl {
         this.tablero = tablero;
 
         botonAcciones = crearBoton("Start");
+        botonAcciones.getStyleClass().add("boton-principal");
         botonAcciones.setOnAction(event -> {
             ejecutar(this::accionPrincipal);
         });
@@ -67,14 +68,14 @@ public class PanelControl {
         VBox.setVgrow(espacio, Priority.ALWAYS);
 
         turno = new Label();
-        turno.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        turno.getStyleClass().add("label-turns-titulo");
 
         panel = new VBox(10);
         panel.setPadding(new Insets(15));
         panel.setAlignment(Pos.TOP_CENTER);
         panel.setPrefWidth(200);
         panel.setMinWidth(200);
-        panel.setStyle("-fx-background-color: #f0f0f0;");
+        panel.getStyleClass().add("panel-control");
         panel.getChildren().addAll(botonReset, new Region(), botonActivity, botonThroughput,
                 botonNumberInSystem, botonTimeInSystem, construirPanelDados(), espacio, turno, botonAcciones);
 
@@ -162,7 +163,7 @@ public class PanelControl {
         mensaje = new Label();
         mensaje.setWrapText(true);
         mensaje.setMaxWidth(170);
-        mensaje.setStyle("-fx-text-fill: #b00020;");
+        mensaje.getStyleClass().add("label-panel");
 
         VBox seccion = new VBox(6, new Label("Change Dice Position"), origen, destino, botonDados, mensaje);
 

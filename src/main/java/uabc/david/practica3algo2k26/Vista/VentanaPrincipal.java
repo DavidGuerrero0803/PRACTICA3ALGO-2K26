@@ -16,6 +16,7 @@ public class VentanaPrincipal extends Application {
     @Override
     public void start(Stage stage) {
         Scene scene = new Scene(construirVentana(), 1200, 720);
+        scene.getStylesheets().add(getClass().getResource("/estilos.css").toExternalForm());
         stage.setTitle("The Dice Game");
         stage.setResizable(false);
         stage.setScene(scene);
@@ -31,7 +32,7 @@ public class VentanaPrincipal extends Application {
         VistaTablero tablero = new VistaTablero(controlador);
 
         BorderPane raiz = new BorderPane();
-        raiz.setStyle("-fx-background-color: white;");
+        raiz.setStyle("-fx-background-color: d3c9bd;");
         raiz.setCenter(tablero.getTablero());
         raiz.setRight(new PanelControl(controlador, tablero).getPanel());
 

@@ -31,7 +31,7 @@ public class VistaPersona {
      * Carga la imagen de la persona según su posición en la línea.
      */
     private void construirImagen() {
-        String ruta = String.format("/Personas/persona%d.png", persona.getIdEstacion() + 1);
+        String ruta = String.format("/Personas/EP%d.png", persona.getIdEstacion() + 1);
         imagenPersona = CargadorImagenes.crearImageView(ruta, 100);
     }
 

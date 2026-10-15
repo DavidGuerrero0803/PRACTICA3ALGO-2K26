@@ -36,9 +36,9 @@ public class VistaCliente {
      */
     public String construirRuta() {
         if (esInicial) {
-            return "/Clientes/ClienteGris.png";
+            return "/Clientes/Cliente0.png";
         } else {
-            return "/Clientes/ClienteAzul.png";
+            return "/Clientes/Cliente1.png";
         }
     }
 }
