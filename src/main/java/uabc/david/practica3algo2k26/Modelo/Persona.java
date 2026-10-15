@@ -15,10 +15,11 @@ public class Persona {
     /**
      * Constructor de la estación.
      * @param idEstacion Identificador de la persona.
+     * @param capacidad máxima de clientes que puede guardar su cola.
      */
-    public Persona(int idEstacion) {
+    public Persona(int idEstacion, int capacidad) {
         this.idEstacion = idEstacion;
-        this.clientes = new ColaCircular<>(200);
+        this.clientes = new ColaCircular<>(capacidad);
         this.dados = new ArrayList<>();
         this.dados.add(new Dado());
     }
