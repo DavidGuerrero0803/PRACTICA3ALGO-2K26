@@ -47,6 +47,9 @@ public class PanelControl {
         });
 
         Button botonActivity = crearBoton("Activity");
+        botonActivity.setOnAction(event -> {
+            new GraficaActivity(controlador.getHistorial()).mostrar();
+        });
         Button botonThroughput = crearBoton("Throughput");
         Button botonNumberInSystem = crearBoton("Number in system");
         Button botonTimeInSystem = crearBoton("Time in system");
@@ -130,7 +133,7 @@ public class PanelControl {
         comboOrigen = new ComboBox<>();
         comboDestino = new ComboBox<>();
 
-        for (int i = 0; i <= 10; i++) {
+        for (int i = 1; i <= 10; i++) {
             comboOrigen.getItems().add(i);
             comboDestino.getItems().add(i);
         }
