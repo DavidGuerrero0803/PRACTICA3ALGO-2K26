@@ -135,9 +135,13 @@ public class GraficaActivity {
                 }
                 valorTurno = sumaRonda / estaciones;
             } else {
-                valorTurno = mostrarMoved ?
-                        historial.getMovimiento(ronda, jugadorSeleccionado) :
-                        historial.getTirada(ronda, jugadorSeleccionado);
+                try {
+                    valorTurno = mostrarMoved ?
+                            historial.getMovimiento(ronda, jugadorSeleccionado) :
+                            historial.getTirada(ronda, jugadorSeleccionado);
+                } catch (Exception e) {
+                    valorTurno = 0;
+                }
             }
 
             series.getData().add(new XYChart.Data<>(String.valueOf(ronda + 1), valorTurno));

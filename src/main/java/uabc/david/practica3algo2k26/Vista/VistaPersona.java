@@ -56,7 +56,7 @@ public class VistaPersona {
         panelClientes = new FlowPane();
         panelClientes.setHgap(2);
         panelClientes.setVgap(2);
-        panelClientes.setPrefWrapLength(100);
+        panelClientes.setPrefWrapLength(120);
 
         if (!persona.esPrimera()) {
             String contenido = persona.getCola().mostrarDatos();

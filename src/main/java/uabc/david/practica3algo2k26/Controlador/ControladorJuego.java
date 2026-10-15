@@ -136,28 +136,34 @@ public class ControladorJuego {
      */
     public void mover() {
         turnoActual++;
-        int[] clientePorProcesar = new int[estaciones];
+        int[] capacidadDadosTurno = new int[estaciones];
+        int[] clientesEnColaInicio = new int[estaciones];
         int[] clientesMovidos = new int[estaciones];
 
         // Guarda la cantidad de clientes disponibles antes del movimiento.
         for (int i = 0; i < estaciones; i++) {
-            clientePorProcesar[i] = personas.get(i).getCola().getCantidadElementos();
+            Persona actual = personas.get(i);
+            clientesEnColaInicio[i] = actual.getCola().getCantidadElementos();
+
+            // Calcular la suma de los dados lanzados por esta estación en este turno.
+            int sumaDados = 0;
+            for (Dado dado : actual.getDados()) {
+                sumaDados += dado.getValor();
+            }
+            capacidadDadosTurno[i] = sumaDados;
         }
 
-        // Recorrido en sentido inverso (de la última persona a la primera): así cada una solo atiende
-        // lo que ya estaba en su cola al inicio del turno.
+        // Recorrido en sentido inverso (de la última persona a la primera).
         for (int i = estaciones - 1; i >= 0; i--) {
             Persona actual = personas.get(i);
 
-            // Calcula la suma de todos los dados lanzados por la estación.
-            int capacidadProcesamiento = 0;
-            for (Dado dado : actual.getDados()) {
-                capacidadProcesamiento += dado.getValor();
-            }
+            // La capacidad de procesamiento es la suma de sus dados ya calculada.
+            int capacidadProcesamiento = capacidadDadosTurno[i];
 
             int movidos = 0;
 
-            // La estación 0 representa la reserva infinita (puede mover exactamente la suma de sus dados).
+            // La primera persona representa la reserva infinita
+            // (puede mover exactamente la suma de sus dados).
             if (actual.esPrimera()) {
                 Persona siguiente = personas.get(i + 1);
                 for (int k = 0; k < capacidadProcesamiento; k++) {
@@ -168,10 +174,9 @@ public class ControladorJuego {
                 }
             } else {
                 // Las demás mueven hasta el máximo disponible en su cola antes del turno.
-                // La última entrega a la pila de terminados en lugar de a otra persona.
                 boolean esLaUltima = (i == estaciones - 1);
                 ColaCircular<Cliente> destino = esLaUltima ? terminados : personas.get(i + 1).getCola();
-                int limiteDisponible = clientePorProcesar[i];
+                int limiteDisponible = clientesEnColaInicio[i];
                 for (int k = 0; k < capacidadProcesamiento; k++) {
                     if (movidos < limiteDisponible && !actual.getCola().colaVacia()) {
                         Cliente clienteExtraido = actual.getCola().eliminarDato();
@@ -196,16 +201,10 @@ public class ControladorJuego {
             clientesMovidos[i] = movidos;
         }
 
-        // Ajustes para la estación 0 en el historial.
-        int capacidadReserva = 0;
-        for (Dado dado : personas.get(0).getDados()) {
-            capacidadReserva += dado.getValor();
-        }
-        clientePorProcesar[0] = capacidadReserva;
-        clientesMovidos[0] = capacidadReserva;
+        clientesMovidos[0] = capacidadDadosTurno[0];
 
         // Por último, se guardan las métricas en cada turno.
-        guardarMetricas(clientePorProcesar, clientesMovidos);
+        guardarMetricas(capacidadDadosTurno, clientesMovidos);
         dadosLanzados = false;
     }
 
@@ -228,6 +227,7 @@ public class ControladorJuego {
     }
 
     /**
+     * Indica si ya se ha iniciado el juego.
      * @return true si ya se presionó Start.
      */
     public boolean isIniciado() {
@@ -235,6 +235,7 @@ public class ControladorJuego {
     }
 
     /**
+     * Indica si ya los dados se han tirado.
      * @return true si ya se lanzaron los dados del turno actual.
      */
     public boolean isDadosLanzados() {
@@ -242,6 +243,7 @@ public class ControladorJuego {
     }
 
     /**
+     * Indica si ya se completaron los 20 turnos.
      * @return true si ya se jugaron todos los turnos.
      */
     public boolean haTerminado() {
@@ -253,6 +255,7 @@ public class ControladorJuego {
     }
 
     /**
+     * Regresa la cantidad de clientes que ya fueron procesados.
      * @return la pila de clientes que ya salieron de la línea.
      */
     public ColaCircular<Cliente> getTerminados() {

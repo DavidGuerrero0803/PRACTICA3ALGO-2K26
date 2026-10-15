@@ -21,7 +21,7 @@ public class VistaCola {
         panel = new FlowPane();
         panel.setHgap(2);
         panel.setVgap(2);
-        panel.setPrefWrapLength(100);
+        panel.setPrefWrapLength(120);
 
         String contenido = cola.mostrarDatos();
         for (int i = 0; i < contenido.length(); i++) {
