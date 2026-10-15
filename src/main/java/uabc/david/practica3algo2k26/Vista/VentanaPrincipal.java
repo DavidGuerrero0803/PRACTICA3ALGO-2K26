@@ -29,9 +29,11 @@ public class VentanaPrincipal extends Application {
     public BorderPane construirVentana() {
         controlador = new ControladorJuego(10, 4, 20);
         VistaTablero tablero = new VistaTablero(controlador);
+
         BorderPane raiz = new BorderPane();
         raiz.setStyle("-fx-background-color: white;");
         raiz.setCenter(tablero.getTablero());
+        raiz.setRight(new PanelControl(controlador, tablero).getPanel());
 
         return raiz;
     }
