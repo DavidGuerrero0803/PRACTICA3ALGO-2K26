@@ -1,6 +1,7 @@
 package uabc.david.practica3algo2k26.Vista;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
 
@@ -14,6 +15,7 @@ public class PanelControl {
     private VistaTablero tablero;
     private Button botonAcciones;
     private VBox panel;
+    private Label mensaje;
 
     /**
      * Arma el panel y lo deja según el estado actual del juego.
@@ -25,6 +27,9 @@ public class PanelControl {
         this.tablero = tablero;
 
         botonAcciones = crearBoton("Start");
+        botonAcciones.setOnAction(event -> {
+            ejecutar(this::accionPrincipal);
+        });
 
         panel = new VBox(10);
         panel.setAlignment(Pos.TOP_CENTER);
@@ -38,6 +43,29 @@ public class PanelControl {
         Button boton = new Button(texto);
         boton.setPrefSize(170, 40);
         return boton;
+    }
+
+    /**
+     * Ejecuta una acción del juego y después actualiza el tablero y los controles.
+     */
+    private void ejecutar(Runnable accion) {
+        accion.run();
+        mensaje.setText("");
+        tablero.dibujar();
+    }
+
+    /**
+     * Botón principal de las acciones del juego:
+     * Empezar, tirar los dados y mover los clientes.
+     */
+    private void accionPrincipal() {
+        if (!controlador.isIniciado()) {
+            controlador.iniciar();
+        } else if (!controlador.isDadosLanzados()) {
+            controlador.lanzarDados();
+        } else {
+            controlador.mover();
+        }
     }
 
     /**
