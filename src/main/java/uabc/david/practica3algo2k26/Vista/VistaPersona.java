@@ -40,7 +40,7 @@ public class VistaPersona {
      */
     private void construirDados() {
         panelDados = new FlowPane();
-        panelDados.setPrefWrapLength(100);
+        panelDados.setPrefWrapLength(105);
         for (Dado dado : persona.getDados()) {
             ImageView imgDado = new VistaDado(dado).mostrarDado();
             if (imgDado != null) {

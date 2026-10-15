@@ -68,8 +68,13 @@ public class VistaTablero {
 
             VistaPersona vista = new VistaPersona(personas.get(i));
             colocarElemento(vista.getImagenPersona(), columna, fila);
+
             if (i < 6) {
-                colocarElemento(vista.getPanelDados(), columnaDado, filaDado);
+                if (i == 4) {
+                    colocarElementoSuperior(vista.getPanelDados(), columnaDado, filaDado);
+                } else {
+                    colocarElemento(vista.getPanelDados(), columnaDado, filaDado);
+                }
                 colocarElemento(vista.getPanelClientes(), columnaCola, filaCola);
             } else {
                 colocarElementoInferior(vista.getPanelDados(), columnaDado, filaDado);
@@ -88,6 +93,14 @@ public class VistaTablero {
     }
 
     private void colocarElementoInferior(Region panel, int columna, int fila) {
+        if (panel != null) {
+            panel.setLayoutX(columna * 100);
+            panel.layoutYProperty().bind(panel.heightProperty().multiply(-1).add((fila + 1) * 100));
+            tablero.getChildren().add(panel);
+        }
+    }
+
+    private void colocarElementoSuperior(Region panel, int columna, int fila) {
         if (panel != null) {
             panel.setLayoutX(columna * 100);
             panel.layoutYProperty().bind(panel.heightProperty().multiply(-1).add((fila + 1) * 100));

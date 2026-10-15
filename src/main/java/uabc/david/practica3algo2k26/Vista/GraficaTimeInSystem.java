@@ -1,5 +1,7 @@
 package uabc.david.practica3algo2k26.Vista;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.BarChart;
@@ -35,6 +37,12 @@ public class GraficaTimeInSystem {
         CategoryAxis xAxis = new CategoryAxis();
         xAxis.setLabel("Order of arrival");
 
+        ObservableList<String> categorias = FXCollections.observableArrayList();
+        for (int i = 1; i <= 34; i++) {
+            categorias.add(String.valueOf(i));
+        }
+        xAxis.setCategories(categorias);
+
         NumberAxis yAxis = new NumberAxis(0, 20, 1);
         yAxis.setLabel("Time in system");
 
@@ -46,7 +54,8 @@ public class GraficaTimeInSystem {
 
         ArrayList<Integer> tiempos = historial.getTimeInSystem();
 
-        for (int i = 0; i < tiempos.size(); i++) {
+        int limite = Math.min(tiempos.size(), 34);
+        for (int i = 0; i < limite; i++) {
             series.getData().add(new XYChart.Data<>(String.valueOf(i + 1), tiempos.get(i)));
         }
 
@@ -59,7 +68,7 @@ public class GraficaTimeInSystem {
         }
 
         root.setCenter(barChart);
-        Scene scene = new Scene(root, 850, 500);
+        Scene scene = new Scene(root, 1200, 500);
         stage.setScene(scene);
         stage.show();
     }
