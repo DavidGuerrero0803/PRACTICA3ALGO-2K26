@@ -2,7 +2,10 @@ package uabc.david.practica3algo2k26.Vista;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 
 import uabc.david.practica3algo2k26.Controlador.ControladorJuego;
@@ -14,6 +17,7 @@ public class PanelControl {
     private ControladorJuego controlador;
     private VistaTablero tablero;
     private Button botonAcciones;
+    private Button botonReset;
     private VBox panel;
     private Label mensaje;
 
@@ -31,12 +35,29 @@ public class PanelControl {
             ejecutar(this::accionPrincipal);
         });
 
+        botonReset = crearBoton("Reset");
+        botonReset.setOnAction(event -> {
+
+        });
+
+        Button botonActivity = crearBoton("Activity");
+        Button botonThroughput = crearBoton("Throughput");
+        Button botonNumberInSystem = crearBoton("Number in system");
+        Button botonTimeInSystem = crearBoton("Time in system");
+
+        Region espacio = new Region();
+        VBox.setVgrow(espacio, Priority.ALWAYS);
+
         panel = new VBox(10);
+        panel.setPadding(new Insets(15));
         panel.setAlignment(Pos.TOP_CENTER);
         panel.setPrefWidth(200);
         panel.setMinWidth(200);
         panel.setStyle("-fx-background-color: #f0f0f0;");
-        panel.getChildren().addAll(botonAcciones);
+        panel.getChildren().addAll(botonReset, new Region(), botonActivity, botonThroughput,
+                botonNumberInSystem, botonTimeInSystem, botonAcciones);
+
+        actualizarControles();
     }
 
     private Button crearBoton(String texto) {
@@ -52,6 +73,7 @@ public class PanelControl {
         accion.run();
         mensaje.setText("");
         tablero.dibujar();
+        actualizarControles();
     }
 
     /**
@@ -66,6 +88,24 @@ public class PanelControl {
         } else {
             controlador.mover();
         }
+    }
+
+    /**
+     * Actualiza los botones, selector de dados y el contador según el estado del juego.
+     */
+    private void actualizarControles() {
+        boolean terminado = controlador.haTerminado();
+        if (terminado) {
+            botonAcciones.setText("End");
+        } else if (!controlador.isIniciado()) {
+            botonAcciones.setText("Start");
+        } else if (!controlador.isDadosLanzados()) {
+            botonAcciones.setText("Roll");
+        } else {
+            botonAcciones.setText("Move");
+        }
+        botonAcciones.setDisable(terminado);
+
     }
 
     /**
