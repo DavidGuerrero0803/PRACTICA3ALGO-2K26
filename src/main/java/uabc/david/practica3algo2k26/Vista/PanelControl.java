@@ -59,6 +59,9 @@ public class PanelControl {
             new GraficaNumberInSystem(controlador.getHistorial()).mostrar();
         });
         Button botonTimeInSystem = crearBoton("Time in system");
+        botonTimeInSystem.setOnAction(event -> {
+            new GraficaTimeInSystem(controlador.getHistorial()).mostrar();
+        });
 
         Region espacio = new Region();
         VBox.setVgrow(espacio, Priority.ALWAYS);
