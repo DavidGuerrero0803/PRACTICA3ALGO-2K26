@@ -1,7 +1,9 @@
 package uabc.david.practica3algo2k26.Vista;
 
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -18,8 +20,12 @@ public class PanelControl {
     private VistaTablero tablero;
     private Button botonAcciones;
     private Button botonReset;
+    private Button botonDados;
     private VBox panel;
     private Label mensaje;
+    private Label turno;
+    private ComboBox<Integer> comboOrigen;
+    private ComboBox<Integer> comboDestino;
 
     /**
      * Arma el panel y lo deja según el estado actual del juego.
@@ -37,7 +43,7 @@ public class PanelControl {
 
         botonReset = crearBoton("Reset");
         botonReset.setOnAction(event -> {
-
+            ejecutar(controlador::reiniciar);
         });
 
         Button botonActivity = crearBoton("Activity");
@@ -48,6 +54,9 @@ public class PanelControl {
         Region espacio = new Region();
         VBox.setVgrow(espacio, Priority.ALWAYS);
 
+        turno = new Label();
+        turno.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
         panel = new VBox(10);
         panel.setPadding(new Insets(15));
         panel.setAlignment(Pos.TOP_CENTER);
@@ -55,7 +64,7 @@ public class PanelControl {
         panel.setMinWidth(200);
         panel.setStyle("-fx-background-color: #f0f0f0;");
         panel.getChildren().addAll(botonReset, new Region(), botonActivity, botonThroughput,
-                botonNumberInSystem, botonTimeInSystem, botonAcciones);
+                botonNumberInSystem, botonTimeInSystem, construirPanelDados(), espacio, turno, botonAcciones);
 
         actualizarControles();
     }
@@ -105,7 +114,42 @@ public class PanelControl {
             botonAcciones.setText("Move");
         }
         botonAcciones.setDisable(terminado);
+        botonReset.setDisable(!terminado);
+        turno.setText("Turns " + controlador.getTurnoActual());
 
+    }
+
+    private VBox construirPanelDados() {
+        comboOrigen = new ComboBox<>();
+        comboDestino = new ComboBox<>();
+
+        for (int i = 0; i <= 10; i++) {
+            comboOrigen.getItems().add(i);
+            comboDestino.getItems().add(i);
+        }
+        comboOrigen.setPrefWidth(75);
+        comboDestino.setPrefWidth(75);
+
+        HBox origen = new HBox(8, new Label("From"), comboOrigen);
+        HBox destino = new HBox(8, new Label("To"), comboDestino);
+        origen.setAlignment(Pos.CENTER_RIGHT);
+        destino.setAlignment(Pos.CENTER_RIGHT);
+
+        botonDados = crearBoton("Move Dice");
+        botonDados.setOnAction(event -> {
+
+        });
+
+        mensaje = new Label();
+        mensaje.setWrapText(true);
+        mensaje.setMaxWidth(170);
+        mensaje.setStyle("-fx-text-fill: #b00020;");
+
+        VBox seccion = new VBox(6, new Label("Change Dice Position"), origen, destino, botonDados, mensaje);
+
+        seccion.setAlignment(Pos.TOP_CENTER);
+        seccion.setPadding(new Insets(15, 0, 0, 0));
+        return seccion;
     }
 
     /**
