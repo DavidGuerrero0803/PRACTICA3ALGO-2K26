@@ -61,9 +61,9 @@ public class VistaPersona {
         if (!persona.esPrimera()) {
             String contenido = persona.getCola().mostrarDatos();
             for (int i = 0; i < contenido.length(); i++) {
-                ImageView imgCliente = new VistaCliente(contenido.charAt(i) == 'I').mostrarCliente();
-                if (imgCliente != null) {
-                    panelClientes.getChildren().add(imgCliente);
+                ImageView imagenCliente = new VistaCliente(contenido.charAt(i) == 'I').mostrarCliente();
+                if (imagenCliente != null) {
+                    panelClientes.getChildren().add(imagenCliente);
                 }
             }
         }
