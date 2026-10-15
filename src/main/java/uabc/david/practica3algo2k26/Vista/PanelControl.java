@@ -51,6 +51,9 @@ public class PanelControl {
             new GraficaActivity(controlador.getHistorial()).mostrar();
         });
         Button botonThroughput = crearBoton("Throughput");
+        botonThroughput.setOnAction(event -> {
+            new GraficaThroughput(controlador.getHistorial()).mostrar();
+        });
         Button botonNumberInSystem = crearBoton("Number in system");
         Button botonTimeInSystem = crearBoton("Time in system");
 
