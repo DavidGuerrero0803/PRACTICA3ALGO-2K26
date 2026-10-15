@@ -55,6 +55,9 @@ public class PanelControl {
             new GraficaThroughput(controlador.getHistorial()).mostrar();
         });
         Button botonNumberInSystem = crearBoton("Number in system");
+        botonNumberInSystem.setOnAction(event -> {
+            new GraficaNumberInSystem(controlador.getHistorial()).mostrar();
+        });
         Button botonTimeInSystem = crearBoton("Time in system");
 
         Region espacio = new Region();
