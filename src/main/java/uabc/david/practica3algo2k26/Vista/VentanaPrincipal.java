@@ -15,8 +15,6 @@ public class VentanaPrincipal extends Application {
 
     @Override
     public void start(Stage stage) {
-        controlador = new ControladorJuego(10, 4, 20);
-
         Scene scene = new Scene(construirVentana(), 1200, 720);
         stage.setTitle("The Dice Game");
         stage.setResizable(false);
@@ -29,8 +27,11 @@ public class VentanaPrincipal extends Application {
      * @return el panel raíz de la escena.
      */
     public BorderPane construirVentana() {
+        controlador = new ControladorJuego(10, 4, 20);
+        VistaTablero tablero = new VistaTablero(controlador);
         BorderPane raiz = new BorderPane();
         raiz.setStyle("-fx-background-color: white;");
+        raiz.setCenter(tablero.getTablero());
 
         return raiz;
     }
