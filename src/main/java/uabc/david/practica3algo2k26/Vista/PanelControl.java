@@ -3,9 +3,9 @@ package uabc.david.practica3algo2k26.Vista;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -117,8 +117,15 @@ public class PanelControl {
         botonReset.setDisable(!terminado);
         turno.setText("Turns " + controlador.getTurnoActual());
 
+        boolean puedeMoverDados = controlador.puedeMoverDados();
+        comboOrigen.setDisable(!puedeMoverDados);
+        comboDestino.setDisable(!puedeMoverDados);
+        botonDados.setDisable(!puedeMoverDados);
     }
 
+    /**
+     * Construye la sección para mover un dado de una persona a otra.
+     */
     private VBox construirPanelDados() {
         comboOrigen = new ComboBox<>();
         comboDestino = new ComboBox<>();
@@ -137,7 +144,7 @@ public class PanelControl {
 
         botonDados = crearBoton("Move Dice");
         botonDados.setOnAction(event -> {
-
+            moverDados();
         });
 
         mensaje = new Label();
@@ -150,6 +157,23 @@ public class PanelControl {
         seccion.setAlignment(Pos.TOP_CENTER);
         seccion.setPadding(new Insets(15, 0, 0, 0));
         return seccion;
+    }
+
+    /**
+     * Mueve un dado de la persona de origen a la de destino (según lo elegido).
+     */
+    private void moverDados() {
+        Integer origen = comboOrigen.getValue();
+        Integer destino = comboDestino.getValue();
+        if (origen == null || destino == null) {
+            mensaje.setText("Select the origin person and the destination person.");
+        } else if (origen.equals(destino)) {
+            mensaje.setText("Origin and destination are the same person.");
+        } else if (!controlador.transferirDado(origen - 1, destino - 1)) {
+            mensaje.setText("Person " + origen + " has no dice.");
+        } else {
+            ejecutar(() -> {});
+        }
     }
 
     /**
