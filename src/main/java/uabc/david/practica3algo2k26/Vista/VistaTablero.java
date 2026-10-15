@@ -2,6 +2,7 @@ package uabc.david.practica3algo2k26.Vista;
 
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 
 import uabc.david.practica3algo2k26.Controlador.ControladorJuego;
 import uabc.david.practica3algo2k26.Modelo.Persona;
@@ -70,8 +71,12 @@ public class VistaTablero {
             if (i < 6) {
                 colocarElemento(vista.getPanelDados(), columnaDado, filaDado);
                 colocarElemento(vista.getPanelClientes(), columnaCola, filaCola);
+            } else {
+                colocarElementoInferior(vista.getPanelDados(), columnaDado, filaDado);
+                colocarElementoInferior(vista.getPanelClientes(), columnaCola, filaCola);
             }
         }
+
     }
 
     private void colocarElemento(Node nodo, int columna, int fila) {
@@ -79,6 +84,14 @@ public class VistaTablero {
             nodo.setLayoutX(columna * 100);
             nodo.setLayoutY(fila * 100);
             tablero.getChildren().add(nodo);
+        }
+    }
+
+    private void colocarElementoInferior(Region panel, int columna, int fila) {
+        if (panel != null) {
+            panel.setLayoutX(columna * 100);
+            panel.layoutYProperty().bind(panel.heightProperty().multiply(-1).add((fila + 1) * 100));
+            tablero.getChildren().add(panel);
         }
     }
 
