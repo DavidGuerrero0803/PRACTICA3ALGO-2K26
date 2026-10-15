@@ -9,6 +9,7 @@ public class Historial {
     private ArrayList<Integer> throughput;
     private ArrayList<Integer> numberInSystem;
     private ArrayList<Integer> timeInSystem;
+    private ArrayList<Integer> turnosSalida;
     private ArrayList<int[]> tiradas;
     private ArrayList<int[]> movimientos;
     private int estaciones;
@@ -24,6 +25,7 @@ public class Historial {
         this.throughput = new ArrayList<>();
         this.numberInSystem = new ArrayList<>();
         this.timeInSystem = new ArrayList<>();
+        this.turnosSalida = new ArrayList<>();
     }
 
     /**
@@ -54,9 +56,11 @@ public class Historial {
 
     /**
      * Registra "el tiempo" que tardó un cliente en cruzar la línea completa.
+     * @param turnoSalida el turno en el que el cliente salió de la línea.
      * @param tiempo cantidad de rondas desde su ingreso hasta su salida.
      */
-    public void registrarTimeInSystem(int tiempo) {
+    public void registrarTimeInSystem(int turnoSalida, int tiempo) {
+        turnosSalida.add(turnoSalida);
         timeInSystem.add(tiempo);
     }
 
@@ -70,6 +74,10 @@ public class Historial {
 
     public ArrayList<Integer> getTimeInSystem() {
         return timeInSystem;
+    }
+
+    public ArrayList<Integer> getTurnosSalida() {
+        return turnosSalida;
     }
 
     public int getTirada(int ronda, int persona) {
